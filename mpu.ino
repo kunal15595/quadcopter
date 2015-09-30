@@ -102,9 +102,11 @@ void mpu_init() {
     mag.initialize();    
     Serial.println(mag.testConnection() ? "AK8975 connection successful" : "AK8975 connection failed");
 
-    mag_hmc.initialize();
-    Serial.println(mag_hmc.testConnection() ? "HMC5883L connection successful" : "HMC5883L connection failed");
+    // mag_hmc.initialize();
+    // Serial.println(mag_hmc.testConnection() ? "HMC5883L connection successful" : "HMC5883L connection failed");
 
+    mag_initiated_at = micros();
+    mag_initiated = false;
 }
 
 
@@ -151,8 +153,11 @@ void ypr_update() {
         } else if (mpu_int_status & 0x02) {
             if (fifo_count >= packet_size) {
 
+                unsigned long loop_start = micros();
+
                 // read a packet from FIFO
                 mpu.getFIFOBytes(fifo_buffer, packet_size);
+
 
                 // track FIFO count here in case there is > 1 packet available
                 // (this lets us immediately read more without waiting for an interrupt)
@@ -161,6 +166,9 @@ void ypr_update() {
                     mpu.getFIFOBytes(fifo_buffer, packet_size);
                     fifo_count -= packet_size;
                 }
+                    
+                Serial.println(micros()-loop_start); 
+
                 if (fifo_count != 0) {
                     if(disorder){
                         Serial.println(F("FIFO RESET !!"));
@@ -172,15 +180,19 @@ void ypr_update() {
                     disorder = false;
                 }
 
+
+
                 // display Euler angles in degrees
                 mpu.dmpGetQuaternion(&q, fifo_buffer);
                 mpu.dmpGetGravity(&gravity, &q);
                 mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+
+                
             }
         }
     }
 
-    if(mag_initiated && (micros() - mag_initiated_at) > 8000){
+    if(mag_initiated && (micros() - mag_initiated_at) > 10000){
         mag.getHeadingFast(&mx, &my, &mz);
         mag_initiated = false;
 
@@ -192,13 +204,15 @@ void ypr_update() {
         // Serial.print(my); Serial.print("\t");
         // Serial.print(mz);  Serial.print("\t");
 
-        ypr[0] = atan2((double)my, (double)mx);
+        
 
-    }else{
+    }else if(!mag_initiated){
         mag.initiateReading();
         mag_initiated = true;
         mag_initiated_at = micros();
     }
+
+    ypr[0] = atan2((double)my, (double)mx);
     
     // Serial.print("ypr:\t");
     // Serial.print(ypr[0]); Serial.print("\t");
@@ -241,12 +255,12 @@ void ypr_update() {
             num_rounds--;
     }
 
-    // Serial.print(yaw_prev);
-    // Serial.print("\t");
-    // Serial.print(ypr[0]);
-    // Serial.print("\t");
-    // Serial.print(num_rounds);
-    // Serial.print("\t");
+    Serial.print(yaw_prev);
+    Serial.print("\t");
+    Serial.print(ypr[0]);
+    Serial.print("\t");
+    Serial.print(num_rounds);
+    Serial.print("\t");
 
     yaw_prev = ypr[0];
     ypr[0] += 2 * pi * num_rounds;
@@ -257,9 +271,9 @@ void ypr_update() {
     int_angle[1] = ypr[1] * YPR_RATIO + ypr_int_offset[1];
     int_angle[2] = ypr[2] * YPR_RATIO + ypr_int_offset[2];
 
-    // Serial.print(int_angle[0]); Serial.print("\t");
-    // Serial.print(int_angle[1]); Serial.print("\t");
-    // Serial.print(int_angle[2]); Serial.print("\t");
+    Serial.print(int_angle[0]); Serial.print("\t");
+    Serial.print(int_angle[1]); Serial.print("\t");
+    Serial.print(int_angle[2]); Serial.print("\t");
 
     // if(!close_by(ypr[0], yaw_prev, 0.3)){
     //     mpu_init();

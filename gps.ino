@@ -35,16 +35,7 @@ inline void gps_init(){
 }
 
 inline void gps_update(){
-    count_bmp_read++;
-
-    if(count_bmp_read < 10){
-        
-        return;
-        // bmp_alt = bmp.readAltitude(101500);
-    }else{
-        count_bmp_read = 0;
-    }
-
+    
     if (Serial3.available()) {
         int read_max = 128;
         while(Serial3.available() && --read_max){

@@ -11,6 +11,7 @@
 #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
 #include <Wire.h>
 #endif
+
 #define OUTPUT_READABLE_YAWPITCHROLL
 
 Watchdog::CApplicationMonitor ApplicationMonitor;
@@ -144,7 +145,7 @@ void loop() {
     
 
     ApplicationMonitor.IAmAlive();
-    Serial.println(micros()-loop_start); 
+    // Serial.println(micros()-loop_start); 
 }
 
 
