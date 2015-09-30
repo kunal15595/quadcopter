@@ -144,7 +144,7 @@ void loop() {
     
 
     ApplicationMonitor.IAmAlive();
-    /* Serial.println(micros()-loop_start); */
+    Serial.println(micros()-loop_start); 
 }
 
 

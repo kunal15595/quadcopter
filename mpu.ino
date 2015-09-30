@@ -39,6 +39,8 @@ float infinity = 1000000;
 float yaw_prev = -infinity;
 
 bool disorder = false;
+bool mag_initiated = false;
+unsigned long mag_initiated_at;
 
 void dmp_data_ready() {
     mpu_interrupt = true;
@@ -178,19 +180,26 @@ void ypr_update() {
         }
     }
 
+    if(mag_initiated && (micros() - mag_initiated_at) > 8000){
+        mag.getHeadingFast(&mx, &my, &mz);
+        mag_initiated = false;
+
+        mx -= MX_OFFSET;
+        my -= MY_OFFSET;
+
+        // Serial.print("mag:\t");
+        // Serial.print(mx); Serial.print("\t");
+        // Serial.print(my); Serial.print("\t");
+        // Serial.print(mz);  Serial.print("\t");
+
+        ypr[0] = atan2((double)my, (double)mx);
+
+    }else{
+        mag.initiateReading();
+        mag_initiated = true;
+        mag_initiated_at = micros();
+    }
     
-    mag.getHeading(&mx, &my, &mz);
-
-    mx -= MX_OFFSET;
-    my -= MY_OFFSET;
-
-    // Serial.print("mag:\t");
-    // Serial.print(mx); Serial.print("\t");
-    // Serial.print(my); Serial.print("\t");
-    // Serial.print(mz);  Serial.print("\t");
-
-    ypr[0] = atan2((double)my, (double)mx);
-
     // Serial.print("ypr:\t");
     // Serial.print(ypr[0]); Serial.print("\t");
     // Serial.print(ypr[1]); Serial.print("\t");
@@ -232,12 +241,12 @@ void ypr_update() {
             num_rounds--;
     }
 
-    Serial.print(yaw_prev);
-    Serial.print("\t");
-    Serial.print(ypr[0]);
-    Serial.print("\t");
-    Serial.print(num_rounds);
-    Serial.print("\t");
+    // Serial.print(yaw_prev);
+    // Serial.print("\t");
+    // Serial.print(ypr[0]);
+    // Serial.print("\t");
+    // Serial.print(num_rounds);
+    // Serial.print("\t");
 
     yaw_prev = ypr[0];
     ypr[0] += 2 * pi * num_rounds;
@@ -248,9 +257,9 @@ void ypr_update() {
     int_angle[1] = ypr[1] * YPR_RATIO + ypr_int_offset[1];
     int_angle[2] = ypr[2] * YPR_RATIO + ypr_int_offset[2];
 
-    Serial.print(int_angle[0]); Serial.print("\t");
-    Serial.print(int_angle[1]); Serial.print("\t");
-    Serial.print(int_angle[2]); Serial.print("\t");
+    // Serial.print(int_angle[0]); Serial.print("\t");
+    // Serial.print(int_angle[1]); Serial.print("\t");
+    // Serial.print(int_angle[2]); Serial.print("\t");
 
     // if(!close_by(ypr[0], yaw_prev, 0.3)){
     //     mpu_init();

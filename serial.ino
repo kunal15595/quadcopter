@@ -1,11 +1,11 @@
 
 inline void check_serial() {
 
-    Serial.print(m1_speed); Serial.print("\t");
-    Serial.print(m2_speed); Serial.print("\t");
-    Serial.print(m3_speed); Serial.print("\t");
-    Serial.print(m4_speed); Serial.print("\t");
-    Serial.println(" -- ");
+    // Serial.print(m1_speed); Serial.print("\t");
+    // Serial.print(m2_speed); Serial.print("\t");
+    // Serial.print(m3_speed); Serial.print("\t");
+    // Serial.print(m4_speed); Serial.print("\t");
+    // Serial.println(" -- ");
 
     serial_send = "";
 

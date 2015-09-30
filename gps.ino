@@ -9,6 +9,9 @@ double old_course;
 
 uint8_t inByte;
 
+int count_gps_read;
+
+
 inline void gps_init(){
     traj_pts = 2;
     traj_state = 0;
@@ -28,9 +31,20 @@ inline void gps_init(){
     traj[1].rawLngData.deg = 91;
     traj[1].rawLngData.billionths = 691838330;
     
+    count_gps_read = 0;
 }
 
 inline void gps_update(){
+    count_bmp_read++;
+
+    if(count_bmp_read < 10){
+        
+        return;
+        // bmp_alt = bmp.readAltitude(101500);
+    }else{
+        count_bmp_read = 0;
+    }
+
     if (Serial3.available()) {
         int read_max = 128;
         while(Serial3.available() && --read_max){

@@ -4,7 +4,7 @@ long prev_height = 0;
 int height_pid_constraint = 100;
 float height_kp = 0.016f, height_ki = 0, height_kd = 0.004f;
 
-const unsigned long TIME_TILL_PROPER_YAW = 5000UL;
+const unsigned long TIME_TILL_PROPER_YAW = 2000UL;
 
 void pid_init() {
     unsigned long yaw_tune_start = millis();
