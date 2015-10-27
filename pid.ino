@@ -73,12 +73,12 @@ inline void pid_update() {
 
     if (alt_hold) {
         if (millis() - height_i_term_calc_time > height_i_term_calc_interval) {
-            height_i_term += height_ki * (desired_height - cur_height);
-            height_d_term = height_kd * (cur_height - prev_height);
-            prev_height = cur_height;
+            height_i_term += height_ki * (desired_height - ping_height);
+            height_d_term = height_kd * (ping_height - prev_height);
+            prev_height = ping_height;
             height_i_term_calc_time = millis();
         }
-        height_pid_result = height_kp * (desired_height - cur_height) + height_i_term - height_d_term;
+        height_pid_result = height_kp * (desired_height - ping_height) + height_i_term - height_d_term;
         height_pid_result = constrain(height_pid_result, - height_pid_constraint, height_pid_constraint);
     } else {
         height_pid_result = 0;

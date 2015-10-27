@@ -27,8 +27,8 @@ void ping_update() {
         height_changed = false;
         height_diff = abs(temp_height_old - temp_height);
         temp_height_old = temp_height;
-        if (close_by(temp_height, cur_height, height_threashold) || bypass_height_filter) //Ignoring spikes in ping values
-            cur_height = temp_height;
+        if (close_by(temp_height, ping_height, height_threashold) || bypass_height_filter) //Ignoring spikes in ping values
+            ping_height = temp_height;
     }
 
     //we cannot read every loop we need some delay between each read

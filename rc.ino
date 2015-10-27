@@ -163,11 +163,11 @@ void rc_update() {
             if (ch5 > CH5_EFFECT / 2) {
                 // left up, right down ==> land or height balance
                 if (!started_landing) {
-                    desired_height = cur_height;
+                    desired_height = ping_height;
                     started_landing = true;
                 }
                 alt_hold = true;
-                if (cur_height > take_down_cutoff) {
+                if (ping_height > take_down_cutoff) {
                     desired_height -= take_down_gradient;
                 } else {
                     alt_hold = false;
@@ -181,7 +181,7 @@ void rc_update() {
                 // left up, right up
                 started_landing = false;
                 if (!alt_hold)
-                    desired_height = cur_height;
+                    desired_height = ping_height;
                 alt_hold = true;
                 enable_motors = true;
                 base_speed = BASE_SPEED + ch3;

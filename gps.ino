@@ -58,6 +58,9 @@ inline void gps_update(){
         // Serial.print("LNG="); Serial.print(gps_lng, 9);Serial.print("\t");
     }
 
+    Serial.print("LAT="); Serial.print(gps_lat, 9);Serial.print("\t");
+    Serial.print("LNG="); Serial.print(gps_lng, 9);Serial.print("\t");
+
     state_next = (traj_state+1)%traj_pts;
     gps_next_lat = traj[state_next].rawLatData.deg + traj[state_next].rawLatData.billionths / 1000000000.0;
     gps_next_lng = traj[state_next].rawLngData.deg + traj[state_next].rawLngData.billionths / 1000000000.0;

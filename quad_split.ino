@@ -70,7 +70,7 @@ int16_t gx, gy, gz;
 boolean height_changed = false;
 int ping_interval = 50;
 unsigned long prev_ping_time = 0;
-long cur_height = 0;
+long ping_height = 0, actual_height = 0;
 long desired_height = 0;
 boolean alt_hold = false;
 int height_pid_result = 0;

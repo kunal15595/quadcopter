@@ -153,7 +153,7 @@ void ypr_update() {
         } else if (mpu_int_status & 0x02) {
             if (fifo_count >= packet_size) {
 
-                unsigned long loop_start = micros();
+                // unsigned long loop_start = micros();
 
                 // read a packet from FIFO
                 mpu.getFIFOBytes(fifo_buffer, packet_size);
@@ -167,7 +167,7 @@ void ypr_update() {
                     fifo_count -= packet_size;
                 }
                     
-                Serial.println(micros()-loop_start); 
+                // Serial.println(micros()-loop_start); 
 
                 if (fifo_count != 0) {
                     if(disorder){
@@ -238,8 +238,8 @@ void ypr_update() {
     int_rate[1] = int_rate[1] * (1 - gyro_retain) + gyro_retain * gyro_int_raw[1];
     int_rate[2] = int_rate[2] * (1 - gyro_retain) + gyro_retain * gyro_int_raw[2];
 
-    /* Serial.print(ypr[0]); */
-    /* Serial.print("\t"); */
+    Serial.print(ypr[0]); 
+    Serial.print("\t"); 
 
     if (ypr[0] < 0)
         ypr[0] += 2 * pi; //converted from [0,PI][-PI,0] to [0,2*PI]
@@ -255,12 +255,12 @@ void ypr_update() {
             num_rounds--;
     }
 
-    Serial.print(yaw_prev);
-    Serial.print("\t");
-    Serial.print(ypr[0]);
-    Serial.print("\t");
-    Serial.print(num_rounds);
-    Serial.print("\t");
+    // Serial.print(yaw_prev);
+    // Serial.print("\t");
+    // Serial.print(ypr[0]);
+    // Serial.print("\t");
+    // Serial.print(num_rounds);
+    // Serial.print("\t");
 
     yaw_prev = ypr[0];
     ypr[0] += 2 * pi * num_rounds;

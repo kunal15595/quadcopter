@@ -29,7 +29,7 @@ inline void send_log_bluetooth(){
         Serial1.print(buf);
         count_serial = count_serial + 1;
     } else if (count_serial == 6 * bluetooth_send_interval) {
-        sprintf(buf, "h %ld\r\nh_pid %d\r\nh_d_t %d\r\nh_i_t %d\r\n", cur_height, height_pid_result, height_d_term, height_i_term);
+        sprintf(buf, "h %ld\r\nh_pid %d\r\nh_d_t %d\r\nh_i_t %d\r\n", ping_height, height_pid_result, height_d_term, height_i_term);
         Serial1.print(buf);
         count_serial = count_serial + 1;
     } else if (count_serial == 5 * bluetooth_send_interval) {
@@ -76,7 +76,7 @@ inline void send_log_bluetooth(){
         Serial1.print(buf);
         count_serial = count_serial + 1;
     } else if (count_serial == 6 * bluetooth_send_interval) {
-        sprintf(buf, "h %ld\r\nh_pid %d\r\nh_d_t %d\r\nh_i_t %d\r\n", cur_height, height_pid_result, height_d_term, height_i_term);
+        sprintf(buf, "h %ld\r\nh_pid %d\r\nh_d_t %d\r\nh_i_t %d\r\n", ping_height, height_pid_result, height_d_term, height_i_term);
         Serial1.print(buf);
         count_serial = count_serial + 1;
     } else if (count_serial == 5 * bluetooth_send_interval) {
