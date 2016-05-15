@@ -26,7 +26,7 @@ double gps_next_alt;
 
 
 int m1_speed, m2_speed, m3_speed, m4_speed;
-int base_speed = 1330, max_speed = 1900, min_speed = 1000;
+int base_speed = 1100, max_speed = 1900, min_speed = 1000;
 
 int angle_pid_result[3];
 int rate_pid_result[3];
@@ -36,7 +36,7 @@ boolean desired_yaw_got = false;
 
 String in_str, in_key, in_value, in_index, serial_send = "";
 
-boolean enable_motors = false,  enable_pitch = false, enable_roll = false;
+boolean enable_motors = true,  enable_pitch = false, enable_roll = false;
 
 int count_check_serial = 0, count_serial = 0;
 
@@ -70,7 +70,8 @@ int16_t gx, gy, gz;
 boolean height_changed = false;
 int ping_interval = 50;
 unsigned long prev_ping_time = 0;
-long ping_height = 0, actual_height = 0;
+long ping_height = 0;
+float actual_height = 0;
 long desired_height = 0;
 boolean alt_hold = false;
 int height_pid_result = 0;
@@ -80,7 +81,7 @@ boolean bypass_height_filter = false; //for calibration
 boolean started_landing = false;
 
 int ch_diff, height_diff;
-  
+
 
 float yaw_threashold = 0.8f;
 int height_threashold = 5000;
@@ -97,19 +98,19 @@ float angle_i_term[3] = {0, 0, 0};
 float rate_i_term[3] = {0, 0, 0};
 unsigned long angle_i_prev_calc_time = 0;
 unsigned long rate_i_prev_calc_time = 0;
-float angle_kp[3] = {58.0f, 50.0f, 50.0f}, angle_kd[3] = {0.0f, 0.0f, 0.0f}, angle_ki[3] = {0.1f, 0.4f, 0.4f};
-float rate_kp[3] = {0.035f, 0.03f, 0.03f}, rate_kd[3] = {0.0f, 0.0f, 0.0f}, rate_ki[3] = {0.0f, 0.0f, 0.0f};
+float angle_kp[3] = {58.0f, 44.0f, 44.0f}, angle_kd[3] = {0.0f, 0.0f, 0.0f}, angle_ki[3] = {0.1f, 0.0f, 0.0f};
+float rate_kp[3] = {0.035f, 0.02f, 0.02f}, rate_kd[3] = {0.0f, 0.0f, 0.0f}, rate_ki[3] = {0.0f, 0.0f, 0.0f};
 int prev_angle[3] = {0, 0, 0};
 int prev_rate[3] = {0, 0, 0};
 int angle_d_term[3] = {0, 0, 0};
 int rate_d_term[3] = {0, 0, 0};
 
-bool follow_traj = false;
+bool follow_traj = true;
 
 
 void setup() {
     ApplicationMonitor.DisableWatchdog();
-    
+
     Serial.begin(9600);
     Serial1.begin(9600);
     Serial3.begin(9600);
@@ -134,7 +135,7 @@ void loop() {
     unsigned long loop_start = micros();
 
     send_log_bluetooth();
-    
+
     bmp_update();
     gps_update();
     ypr_update();
@@ -142,10 +143,10 @@ void loop() {
     ping_update();
     pid_update();
     esc_update();
-    
+
 
     ApplicationMonitor.IAmAlive();
-    // Serial.println(micros()-loop_start); 
+    // Serial.println(micros()-loop_start);
 }
 
 
@@ -163,7 +164,7 @@ void loop() {
                                        ||
                                        ||
                                        ||
-                                  
+
                                        M 3
 
                                down [X] +ve pitch
@@ -183,4 +184,3 @@ roll values
 1500  27.00  25.00  5.00
 
 */
-

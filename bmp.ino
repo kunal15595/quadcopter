@@ -1,13 +1,15 @@
-#include <Adafruit_BMP085.h>
+    #include <Adafruit_BMP085.h>
 
 Adafruit_BMP085 bmp;
-float bmp_alt, bmp_base_alt;  
+float bmp_alt, bmp_base_alt;
 
 bool pres_initiated = false;
 unsigned long pres_initiated_at;
 
 bool temp_initiated = false;
 unsigned long temp_initiated_at;
+
+char bmp_buf[200];
 
 void bmp_init(){
     if (!bmp.begin()) {
@@ -43,17 +45,24 @@ inline void bmp_update(){
     }
 
 	bmp_alt = bmp.readAltitudeFast(101500) - bmp_base_alt;
-    
+
     if(ping_height/29/2 > 150){
-        actual_height = bmp_alt*100;
+        actual_height = 0.9*actual_height + 0.1*bmp_alt*100;
+        // sprintf(bmp_buf, "height_b =  %ld\t", actual_height);
+        // Serial.print(bmp_buf);
     }else{
-        actual_height = ping_height/29/2;
+        actual_height = 0.9*actual_height + 0.1*ping_height/29/2;
+        // sprintf(bmp_buf, "height_p =  %ld\t", actual_height);
+        // Serial.print(bmp_buf);
     }
 
-    Serial.print("height = ");
-    Serial.print(actual_height);
-    Serial.print("\t");
-    
+    // sprintf(bmp_buf, "height =  %ld\t", actual_height);
+    // Serial.print(bmp_buf);
+
+    // Serial.print("height = ");
+    // Serial.print(actual_height);
+    // Serial.print("\t");
+
     // Serial.println(" meters");
-    
+
 }

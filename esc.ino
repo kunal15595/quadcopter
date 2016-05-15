@@ -2,9 +2,13 @@
 
 Servo m1, m2, m3, m4;
 
+// 1->4, 2->5, 4->7
+
+// pin 6, 10, 11 are damaged
+
 int ESC_1 = 4;
 int ESC_2 = 5;
-int ESC_3 = 3; //pin 6 is damaged
+int ESC_3 = 9;
 int ESC_4 = 7;
 int ESC_MIN = 1000;
 int ESC_MAX = 2000;
@@ -16,10 +20,10 @@ void esc_init() {
     m4.attach(ESC_4);
     delay(100);
     stop_motors();
-    enable_pitch = false;
-    // enable_roll = true;
-    // enable_pitch = true;
-    enable_roll = false;
+    // enable_pitch = false;
+    enable_roll = true;
+    enable_pitch = true;
+    // enable_roll = false;
 }
 
 void stop_motors() {
@@ -38,10 +42,20 @@ inline void esc_update()
     //Reference is +ve extra rate
     //if extra rate is +ve which all speeds should gain from it and which all will loose from it
 
-    m1_speed = base_speed + height_pid_result - rate_pid_result[0] + rate_pid_result[1] - rate_pid_result[2];
-    m2_speed = base_speed + height_pid_result + rate_pid_result[0] + rate_pid_result[1] + rate_pid_result[2];
-    m3_speed = base_speed + height_pid_result - rate_pid_result[0] - rate_pid_result[1] + rate_pid_result[2];
-    m4_speed = base_speed + height_pid_result + rate_pid_result[0] - rate_pid_result[1] - rate_pid_result[2];
+    // m1_speed = base_speed + rate_pid_result[1] - rate_pid_result[2];
+    // m2_speed = base_speed + rate_pid_result[1] + rate_pid_result[2];
+    // m3_speed = base_speed - rate_pid_result[1] + rate_pid_result[2];
+    // m4_speed = base_speed - rate_pid_result[1] - rate_pid_result[2];
+
+    // m1_speed = base_speed + height_pid_result - rate_pid_result[0] + rate_pid_result[1] - rate_pid_result[2];
+    // m2_speed = base_speed + height_pid_result + rate_pid_result[0] + rate_pid_result[1] + rate_pid_result[2];
+    // m3_speed = base_speed + height_pid_result - rate_pid_result[0] - rate_pid_result[1] + rate_pid_result[2];
+    // m4_speed = base_speed + height_pid_result + rate_pid_result[0] - rate_pid_result[1] - rate_pid_result[2];
+
+    m1_speed = base_speed - rate_pid_result[0] + rate_pid_result[1] - rate_pid_result[2];
+    m2_speed = base_speed + rate_pid_result[0] + rate_pid_result[1] + rate_pid_result[2];
+    m3_speed = base_speed - rate_pid_result[0] - rate_pid_result[1] + rate_pid_result[2];
+    m4_speed = base_speed + rate_pid_result[0] - rate_pid_result[1] - rate_pid_result[2];
 
     //constrain to to the pulse width limit we can give to the motor
     m1_speed = constrain(m1_speed, min_speed, max_speed);
@@ -66,5 +80,11 @@ inline void esc_update()
         m4.writeMicroseconds(1000);
         m2.writeMicroseconds(1000);
     }
+
+    // m1.writeMicroseconds(1000);
+    // m2.writeMicroseconds(1000);
+    // m3.writeMicroseconds(1000);
+    // m4.writeMicroseconds(1400);
+    
 
 }

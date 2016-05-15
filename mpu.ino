@@ -124,6 +124,9 @@ void desired_yaw_update() {
 
         desired_angle[0] = desired_yaw;
         desired_yaw_got = true;
+        Serial.print("desired yaw: ");
+        Serial.print(desired_angle[0]);
+        
     }
 }
 
@@ -220,8 +223,11 @@ void ypr_update() {
     // Serial.print(ypr[2]); Serial.print("\t");
 
     heading = ypr[0] * 180.0/3.14159265 + 180 - HEADING_OFFSET;
-    while (heading < 0) heading += 360;
-    while (heading > 360) heading -= 360;
+    
+    while (heading < 0) 
+        heading += 360;
+    while (heading > 360) 
+        heading -= 360;
 
     // Serial.print(heading);
     // Serial.print(" deg"); Serial.print("\t");
@@ -238,8 +244,8 @@ void ypr_update() {
     int_rate[1] = int_rate[1] * (1 - gyro_retain) + gyro_retain * gyro_int_raw[1];
     int_rate[2] = int_rate[2] * (1 - gyro_retain) + gyro_retain * gyro_int_raw[2];
 
-    Serial.print(ypr[0]); 
-    Serial.print("\t"); 
+    // Serial.print(ypr[0]); 
+    // Serial.print("\t"); 
 
     if (ypr[0] < 0)
         ypr[0] += 2 * pi; //converted from [0,PI][-PI,0] to [0,2*PI]
@@ -271,9 +277,9 @@ void ypr_update() {
     int_angle[1] = ypr[1] * YPR_RATIO + ypr_int_offset[1];
     int_angle[2] = ypr[2] * YPR_RATIO + ypr_int_offset[2];
 
-    Serial.print(int_angle[0]); Serial.print("\t");
-    Serial.print(int_angle[1]); Serial.print("\t");
-    Serial.print(int_angle[2]); Serial.print("\t");
+    // Serial.print(int_angle[0]); Serial.print("\t");
+    // Serial.print(int_angle[1]); Serial.print("\t");
+    // Serial.print(int_angle[2]); Serial.print("\t");
 
     // if(!close_by(ypr[0], yaw_prev, 0.3)){
     //     mpu_init();

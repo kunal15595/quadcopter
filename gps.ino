@@ -14,7 +14,7 @@ int count_gps_read;
 
 inline void gps_init(){
     traj_pts = 2;
-    traj_state = 0;
+    traj_state = 1;
 
     dist_to_next = old_dist_to_next = 100;
     old_course = 0.0;
@@ -36,13 +36,11 @@ inline void gps_init(){
 
 inline void gps_update(){
     
-    if (Serial3.available()) {
-        int read_max = 128;
-        while(Serial3.available() && --read_max){
-            inByte = Serial3.read();
-            // Serial.print(inByte);
-            gps.encode(inByte);
-        }        
+    int read_max = 512;
+    while(Serial3.available() && --read_max){
+        inByte = Serial3.read();
+        // Serial.print(inByte);
+        gps.encode(inByte);
     }
 
     if (gps.altitude.isUpdated()) {
@@ -58,8 +56,8 @@ inline void gps_update(){
         // Serial.print("LNG="); Serial.print(gps_lng, 9);Serial.print("\t");
     }
 
-    Serial.print("LAT="); Serial.print(gps_lat, 9);Serial.print("\t");
-    Serial.print("LNG="); Serial.print(gps_lng, 9);Serial.print("\t");
+    // Serial.print("LAT="); Serial.print(gps_lat, 9);Serial.print("\t");
+    // Serial.print("LNG="); Serial.print(gps_lng, 9);Serial.print("\t");
 
     state_next = (traj_state+1)%traj_pts;
     gps_next_lat = traj[state_next].rawLatData.deg + traj[state_next].rawLatData.billionths / 1000000000.0;

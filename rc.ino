@@ -1,10 +1,19 @@
 
 int ch1_temp_old, ch2_temp_old, ch3_temp_old, ch4_temp_old;
+int ch5_mode = 3;
 
-const int CH1_PIN = 13;
-const int CH2_PIN = 12;
-const int CH3_PIN = 11;
-const int CH4_PIN = 10;
+
+// const int CH1_PIN = 14;
+// const int CH2_PIN = 12;
+// const int CH3_PIN = 11;
+// const int CH4_PIN = 10;
+// const int CH5_PIN = 50;
+// const int CH6_PIN = 52;
+
+const int CH1_PIN = A12;
+const int CH2_PIN = A14;
+const int CH3_PIN = A11;
+const int CH4_PIN = A10;
 const int CH5_PIN = 50;
 const int CH6_PIN = 52;
 
@@ -24,21 +33,24 @@ const int CH6_MIN = 1000;
 float CH1_EFFECT = 1.5f;
 
 // actual range is 0.40f
-float CH2_EFFECT = 0.10f;
-float CH4_EFFECT = 0.10f;
+float CH2_EFFECT = 0.20f;
+float CH4_EFFECT = 0.20f;
 
 // actual range is 1400 to 1700;
-int CH3_MIN_EFFECT = 1400;
+int CH3_MIN_EFFECT = 1200;
 int CH3_MAX_EFFECT = 1700;
 
 // actual dev is 150
 int CH3_MAX_DEV = 150;
 
+// actual dev is 1550
 int BASE_SPEED = 1550;
 
 const int CH5_EFFECT = 100;
 const int CH6_EFFECT = 100;
 const int CH3_MIN_CUTOFF = 50;
+
+char rc_buf[200];
 
 void rc_init() {
     pinMode(CH1_PIN, INPUT);
@@ -153,9 +165,13 @@ void rc_update() {
 
 
         //- is there so that the channel values correspond to angle sign
-        desired_angle[0] = desired_yaw - ch1;
+        // desired_angle[0] = desired_yaw - ch1;
         desired_angle[1] = 0 - ch2;
         desired_angle[2] = 0 - ch4;
+
+        // Serial.print(ch1);
+        // Serial.print("\t");
+        
 
         if (ch6 > 0) {
             bypass_height_filter = false;
@@ -188,7 +204,7 @@ void rc_update() {
                 follow_traj = false;
             } else {
                 // left up, right mid ==> follow trajectory
-                follow_traj = true;
+                follow_traj = false;
                 started_landing = false;
                 alt_hold = false;
                 enable_motors = true;
@@ -203,72 +219,100 @@ void rc_update() {
             // So the error do not accumulate while sitting
             clear_i_terms(0);
             
-            if (ch5 > CH5_EFFECT / 2) { 
+            if (ch5 > CH5_EFFECT / 2 && ch5_mode != 3) { 
                 // left down, right down
-                desired_yaw_got = false;
-            } else if (ch5 < -CH5_EFFECT / 2) {
+                ch5_mode = 3;
+                desired_yaw_update();                
+            } else if (ch5 < -CH5_EFFECT / 2 && ch5_mode != 1) {
                 // left down, right up ==> desired yaw
-                desired_yaw_update();
-            } else { 
-                // left down, right mid
+                ch5_mode = 1;
                 desired_yaw_got = false;
+                Serial.print("desired false 1");
+            } else if (ch5 < CH5_EFFECT / 2 && ch5 > -CH5_EFFECT / 2 && ch5_mode != 2) { 
+                // left down, right mid
+                ch5_mode = 2;
+                desired_yaw_got = false;
+                Serial.print("desired false 2");
             }
         }
     }
+    // sprintf(rc_buf, "\t%d\t%d\t%d\t", ch2_val, ch3_val, ch4_val);
+    // Serial.print(rc_buf);
 
 }
 
 void ch1_change() {
+
     if (digitalRead(CH1_PIN) == HIGH) {
         ch1_prev = micros();
     } else {
         ch1_val = micros() - ch1_prev;
         ch_changed = true;
         prev_ch_update = millis();
+        // Serial.println(ch1_val);
+        // Serial.println("1");
     }
 }
 void ch2_change() {
+
     if (digitalRead(CH2_PIN) == HIGH) {
         ch2_prev = micros();
     } else {
         ch2_val = micros() - ch2_prev;
         ch_changed = true;
         prev_ch_update = millis();
+        // Serial.println(ch2_val);
+        // Serial.println("2");
     }
 }
 void ch3_change() {
+
     if (digitalRead(CH3_PIN) == HIGH) {
         ch3_prev = micros();
     } else {
         ch3_val = micros() - ch3_prev;
         ch_changed = true;
         prev_ch_update = millis();
+        // Serial.println(ch3_val);
+        // Serial.println("3");
     }
 }
 void ch4_change() {
+
     if (digitalRead(CH4_PIN) == HIGH) {
         ch4_prev = micros();
     } else {
         ch4_val = micros() - ch4_prev;
         ch_changed = true;
         prev_ch_update = millis();
+        // Serial.println(ch4_val);
+
+        // Serial.println("4");
     }
 }
 void ch5_change() {
+
     if (digitalRead(CH5_PIN) == HIGH) {
         ch5_prev = micros();
     } else {
         ch5_val = micros() - ch5_prev;
         ch_changed = true;
         prev_ch_update = millis();
+        // Serial.println(ch5_val);
+
+        // Serial.println("5");
     }
 }
 void ch6_change() {
+
     if (digitalRead(CH6_PIN) == HIGH) {
         ch6_prev = micros();
     } else {
         ch6_val = micros() - ch6_prev;
         ch_changed = true;
         prev_ch_update = millis();
+        // Serial.println(ch6_val);
+
+        // Serial.println("6");
     }
 }

@@ -1,4 +1,4 @@
-int bluetooth_send_interval = 30; //increase this if the live graph in the app is lagging
+int bluetooth_send_interval = 10; //increase this if the live graph in the app is lagging
 unsigned long bluetooth_send_start = 0;
 
 char buf[200];
@@ -104,7 +104,7 @@ inline void send_log_bluetooth(){
         count_serial = count_serial + 1;
     }
 
-    if (count_check_serial & 0x40) {
+    if (count_check_serial & 0x08) {
         check_serial();
     } else {
         count_check_serial = count_check_serial + 1;

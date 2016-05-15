@@ -1,1 +1,1 @@
-arduino quad_split.ino --upload && picocom /dev/ttyUSB0 -b 9600 -r -l
+arduino quad_split.ino --upload && picocom /dev/ttyACM0 -b 9600 -r -l
